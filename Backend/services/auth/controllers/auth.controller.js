@@ -2,6 +2,7 @@ import { app } from "../configs/firebase.js";
 import {getAuth} from "firebase-admin/auth";
 import User from "../models/user.model.js";
 import crypto from "crypto";
+import redis from "../../../shared/redis/redis.js";
 
 export const GoogleAuth = async (req, res) => {
     try {
@@ -23,6 +24,13 @@ export const GoogleAuth = async (req, res) => {
 
 
         const sessionId = crypto.randomUUID()
+
+        await redis.set(`session:${sessionId}` , JSON.stringyfy({
+            userId:user._id,
+            name:user.name,
+            email:user.email,
+            interviewCoin:user.interviewCoin
+        }), "EX", 7 * 24 * 60 * 60 * 1000)
 
         res.cookies("session", sessionId , {
             httponly:true,
