@@ -26,7 +26,7 @@ export const GoogleAuth = async (req, res) => {
         const sessionId = crypto.randomUUID()
 
         await redis.set(`session:${sessionId}` , JSON.stringyfy({
-            userId:user._id,
+            userId:user._id ,
             name:user.name,
             email:user.email,
             interviewCoin:user.interviewCoin
@@ -47,5 +47,33 @@ export const GoogleAuth = async (req, res) => {
 
     } catch (error) {
         return res.status(500).json("Google Auth Error", error)
+    }
+}
+
+
+export const logOut = async () => {
+    try{
+        const sessionId = req.cookies?.session
+
+        if(sessionId) {
+            await redis.del(`session:${sessionId}`)
+        }
+
+        res.clearCookie("session", {
+            httponly:true,
+            secure:false,
+            sameSite:"strict"
+        })
+
+        return res.status(200).json({
+            success:true,
+            message: "LogOut Successfully"})
+
+
+    }catch (error) {
+        return res.status(500).json({
+            success:false,
+            message: error.message,
+        });
     }
 }
