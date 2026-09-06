@@ -17,3 +17,12 @@ build/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Secrets / Credentials
+**/serviceAccountKey.json
+**/*service-account*.json
+**/*credentials*.json
+
+# IDE
+.vscode/
+.idea/
