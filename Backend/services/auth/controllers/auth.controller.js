@@ -25,14 +25,14 @@ export const GoogleAuth = async (req, res) => {
 
         const sessionId = crypto.randomUUID()
 
-        await redis.set(`session:${sessionId}` , JSON.stringyfy({
+        await redis.set(`session:${sessionId}` , JSON.stringify({
             userId:user._id ,
             name:user.name,
             email:user.email,
             interviewCoin:user.interviewCoin
         }), "EX", 7 * 24 * 60 * 60 * 1000)
 
-        res.cookies("session", sessionId , {
+        res.cookie("session", sessionId , {
             httponly:true,
             secure:false,
             sameSite:"strict",
