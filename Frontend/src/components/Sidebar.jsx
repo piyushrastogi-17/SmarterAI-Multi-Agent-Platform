@@ -64,8 +64,8 @@ function Sidebar({
                     <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => setSidebarOpen(!sidebarOpen)}
-                        className='md:hidden md:flex text-black/30  hover:text-[#0A0A0A] transition-colors shrink-0 cursor-pointer'>
+                        onClick={() => setMobileOpen(!mobileOpen)}
+                        className='md:hidden flex text-black/30 hover:text-[#0A0A0A] transition-colors shrink-0 cursor-pointer'>
                         <FiSidebar size={15} />
                     </motion.button>
 
@@ -159,36 +159,36 @@ function Sidebar({
 
                     <AnimatePresence>
                         {sidebarOpen && (
-                            
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
 
-                                    className='flex-1 min-w-0'>
-                                    <p className='text-[#0A0A0A] text-[11px] font-semibold truncate'>
-                                        {user?.name ?? "User"}
-                                    </p>
-                                    <p className="text-black/35 text-[9px] truncate">
-                                        {user?.email ?? "user@gmail.com"}
-                                    </p>
-                                </motion.div>
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
 
-                            
+                                className='flex-1 min-w-0'>
+                                <p className='text-[#0A0A0A] text-[11px] font-semibold truncate'>
+                                    {user?.name ?? "User"}
+                                </p>
+                                <p className="text-black/35 text-[9px] truncate">
+                                    {user?.email ?? "user@gmail.com"}
+                                </p>
+                            </motion.div>
+
+
                         )}
                     </AnimatePresence>
                     <AnimatePresence>
-                    {sidebarOpen && (
-                    <motion.button
-                        onClick={onLogout}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        whileHover={{ scale: 1.15 }}
-                        className='text-black/30 hover:text-[#0A0A0A] transition'>
-                        <FiLogOut size={13}/>
-                    </motion.button>
-                    )}
+                        {sidebarOpen && (
+                            <motion.button
+                                onClick={onLogout}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                whileHover={{ scale: 1.15 }}
+                                className='text-black/30 hover:text-[#0A0A0A] transition'>
+                                <FiLogOut size={13} />
+                            </motion.button>
+                        )}
                     </AnimatePresence>
                 </div>
             </div>
@@ -208,6 +208,34 @@ function Sidebar({
                 {inner}
 
             </motion.aside>
+
+
+            <AnimatePresence>
+                {mobileOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+
+                        onClick={() => setMobileOpen(false)}
+                        className='fixed inset-0 bg-black/30 z-40 md:hidden backdrop-blur-sm' />
+                )}
+            </AnimatePresence>
+
+
+            <AnimatePresence>
+                {mobileOpen && (
+                    <motion.aside
+                        initial={{ x: -280 }}
+                        animate={{ x: 0 }}
+                        exit={{ x: -280 }}
+                        transition={{ duration: 0.25, ease: "easeInOut" }}
+                        className='fixed top-0 left-0 h-screen w-[280px] max-w-[85vw] bg-white border-r border-black/8 flex flex-col z-50 md:hidden overflow-hidden'>
+                        {inner}
+                    </motion.aside>
+                )}
+
+            </AnimatePresence>
         </>
     )
 }
