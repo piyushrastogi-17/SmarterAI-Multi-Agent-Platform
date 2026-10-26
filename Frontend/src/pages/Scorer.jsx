@@ -7,6 +7,7 @@ import api from '../utils/axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { setResume } from '../redux/resumeSlice'
 import { PolarAngleAxis, RadialBarChart, RadialBar } from "recharts"
+import { useCoins } from '../apis/user.api'
 
 
 const ScoreRing = ({ score }) => {
@@ -39,15 +40,15 @@ const ScoreRing = ({ score }) => {
 }
 
 
-const Tag = ({text, color}) => {
+const Tag = ({ text, color }) => {
   const styles = {
     purple: "bg-purple-50    text-purple-700 border-puple-200",
-    red:    "bg-red-50       text-red-700    border-red-200",
-    green:  "bg-green-50     text-green-700  border-green-200",
+    red: "bg-red-50       text-red-700    border-red-200",
+    green: "bg-green-50     text-green-700  border-green-200",
     yellow: "bg-yellow-50    text-yellow-700 border-yellow-200",
   };
-  return(
-    <div className={`text-[10px] px-1.5 py-1 rounded-md border font-meedium ${styles [color]}`}>
+  return (
+    <div className={`text-[10px] px-1.5 py-1 rounded-md border font-meedium ${styles[color]}`}>
       {text}
     </div>
   )
@@ -87,6 +88,13 @@ function Scorer({ user, setUser }) {
     }
     try {
       setLoading(true)
+      const coinResponse = await useCoins({ coins: 10, action: "resume-scorer" })
+      console.log("COIN RESPONSE:", coinResponse);
+
+
+      setUser((prev) => ({
+        ...prev, interviewCoins: coinResponse?.interviewCoins,
+      }))
       const formData = new FormData()
       formData.append("resume", file)
 
@@ -145,7 +153,7 @@ function Scorer({ user, setUser }) {
 
         </motion.div>
 
-{/* strength  */}
+        {/* strength  */}
         <div className='grid grid-cols-1 gap-3 md:grid-cols-2'>
           <motion.div
             initial={{ y: 20, opacity: 0 }}
@@ -155,18 +163,18 @@ function Scorer({ user, setUser }) {
             <div className='absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none' />
 
             <div className='relative flex items-center gap-1.5 mb-2.5'>
-                <FiAlertCircle className='text-green-400' size={14}/>
-                <span className='text-xs font-semibold text-white'>Strengths</span>
+              <FiAlertCircle className='text-green-400' size={14} />
+              <span className='text-xs font-semibold text-white'>Strengths</span>
             </div>
 
 
             <div className='relative flex flex-wrap gap-1.5'>
-                {resume?.strengths?.map(s =><Tag key={s} text={s} color="green"/>)}
+              {resume?.strengths?.map(s => <Tag key={s} text={s} color="green" />)}
             </div>
 
           </motion.div>
 
-{/* weaknesses */}
+          {/* weaknesses */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -175,59 +183,59 @@ function Scorer({ user, setUser }) {
             <div className='absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none' />
 
             <div className='relative flex items-center gap-1.5 mb-2.5'>
-                <FiAlertCircle className='text-red-400' size={14}/>
-                <span className='text-xs font-semibold text-white'>weaknesses</span>
+              <FiAlertCircle className='text-red-400' size={14} />
+              <span className='text-xs font-semibold text-white'>weaknesses</span>
             </div>
 
 
             <div className='relative flex flex-wrap gap-1.5'>
-                {resume?.weaknesses?.map(s =><Tag key={s} text={s} color="yellow"/>)}
+              {resume?.weaknesses?.map(s => <Tag key={s} text={s} color="yellow" />)}
             </div>
 
           </motion.div>
 
-          
+
         </div>
 
-{/* missing skills  */}
+        {/* missing skills  */}
         <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.12 }}
-            className='relative overflow-hidden bg-[#000000]/90 backdrop-blur-2xl border border-white/10 rounded-2xl p-4 sm:flex-row shadow-[0_8px_32px_rgba(0,0,0,0.2)]'>
-            <div className='absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none' />
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.12 }}
+          className='relative overflow-hidden bg-[#000000]/90 backdrop-blur-2xl border border-white/10 rounded-2xl p-4 sm:flex-row shadow-[0_8px_32px_rgba(0,0,0,0.2)]'>
+          <div className='absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none' />
 
-            <div className='relative flex items-center gap-1.5 mb-2.5'>
-                <FiZap className='text-red-400' size={14}/>
-                <span className='text-xs font-semibold text-white'>Missing Skills</span>
-            </div>
-
-
-            <div className='relative flex flex-wrap gap-1.5'>
-                {resume?.missingSkills?.map(s =><Tag key={s} text={s} color="red"/>)}
-            </div>
-
-          </motion.div>
-
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.12 }}
-            className='relative overflow-hidden bg-[#000000]/90 backdrop-blur-2xl border border-white/10 rounded-2xl p-4 sm:flex-row shadow-[0_8px_32px_rgba(0,0,0,0.2)]'>
-            <div className='absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none' />
-
-            <div className='relative flex items-center gap-1.5 mb-2.5'>
-                <FiTrendingUp className='text-purple-400' size={14}/>
-                <span className='text-xs font-semibold text-white'>Recommendation</span>
-            </div>
+          <div className='relative flex items-center gap-1.5 mb-2.5'>
+            <FiZap className='text-red-400' size={14} />
+            <span className='text-xs font-semibold text-white'>Missing Skills</span>
+          </div>
 
 
-            <div className='relative flex flex-wrap gap-1.5'>
-                {resume?.recommendations?.map(s =><Tag key={s} text={s} color="purple"/>)}
-            </div>
+          <div className='relative flex flex-wrap gap-1.5'>
+            {resume?.missingSkills?.map(s => <Tag key={s} text={s} color="red" />)}
+          </div>
 
-          </motion.div>
-        
+        </motion.div>
+
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.12 }}
+          className='relative overflow-hidden bg-[#000000]/90 backdrop-blur-2xl border border-white/10 rounded-2xl p-4 sm:flex-row shadow-[0_8px_32px_rgba(0,0,0,0.2)]'>
+          <div className='absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none' />
+
+          <div className='relative flex items-center gap-1.5 mb-2.5'>
+            <FiTrendingUp className='text-purple-400' size={14} />
+            <span className='text-xs font-semibold text-white'>Recommendation</span>
+          </div>
+
+
+          <div className='relative flex flex-wrap gap-1.5'>
+            {resume?.recommendations?.map(s => <Tag key={s} text={s} color="purple" />)}
+          </div>
+
+        </motion.div>
+
       </section>
     </div>
   )
